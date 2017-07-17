@@ -1,0 +1,11 @@
+version: '2'
+services:
+    wade-postgresql:
+        image: postgres:9.6.2
+        # volumes:
+        #     - ~/volumes/jhipster/WADE/postgresql/:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_USER=WADE
+            - POSTGRES_PASSWORD=
+        ports:
+            - 5432:5432
