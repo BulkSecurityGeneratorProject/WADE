@@ -1,0 +1,79 @@
+<div>
+    <h2>
+        <span jhiTranslate="wadeApp.aixmFeature.home.title">Aixm Features</span>
+        <button class="btn btn-primary float-right create-aixm-feature" [routerLink]="['/', { outlets: { popup: ['aixm-feature-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span class="hidden-sm-down"  jhiTranslate="wadeApp.aixmFeature.home.createLabel">
+            Create new Aixm Feature
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'wadeApp.aixmFeature.home.search' | translate }}">
+                    <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <span class="fa fa-trash-o"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="aixmFeatures">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="identifier"><span jhiTranslate="wadeApp.aixmFeature.identifier">Identifier</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="type"><span jhiTranslate="wadeApp.aixmFeature.type">Type</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="timeSlice"><span jhiTranslate="wadeApp.aixmFeature.timeSlice">Time Slice</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="geometry"><span jhiTranslate="wadeApp.aixmFeature.geometry">Geometry</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="lowerLimit"><span jhiTranslate="wadeApp.aixmFeature.lowerLimit">Lower Limit</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="upperLimit"><span jhiTranslate="wadeApp.aixmFeature.upperLimit">Upper Limit</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+            <tr *ngFor="let aixmFeature of aixmFeatures ;trackBy: trackId">
+                <td><a [routerLink]="['../aixm-feature', aixmFeature.id ]">{{aixmFeature.id}}</a></td>
+                <td>{{aixmFeature.identifier}}</td>
+                <td>{{aixmFeature.type}}</td>
+                <td>{{aixmFeature.timeSlice}}</td>
+                <td>{{aixmFeature.geometry}}</td>
+                <td>{{aixmFeature.lowerLimit}}</td>
+                <td>{{aixmFeature.upperLimit}}</td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../aixm-feature', aixmFeature.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'aixm-feature/'+ aixmFeature.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'aixm-feature/'+ aixmFeature.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+
+<div *ngIf="aixmFeature">
+    <h2><span jhiTranslate="wadeApp.aixmFeature.detail.title">Aixm Feature</span> {{aixmFeature.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="wadeApp.aixmFeature.identifier">Identifier</span></dt>
+        <dd>
+            <span>{{aixmFeature.identifier}}</span>
+        </dd>
+        <dt><span jhiTranslate="wadeApp.aixmFeature.type">Type</span></dt>
+        <dd>
+            <span>{{aixmFeature.type}}</span>
+        </dd>
+        <dt><span jhiTranslate="wadeApp.aixmFeature.timeSlice">Time Slice</span></dt>
+        <dd>
+            <span>{{aixmFeature.timeSlice}}</span>
+        </dd>
+        <dt><span jhiTranslate="wadeApp.aixmFeature.geometry">Geometry</span></dt>
+        <dd>
+            <span>{{aixmFeature.geometry}}</span>
+        </dd>
+        <dt><span jhiTranslate="wadeApp.aixmFeature.lowerLimit">Lower Limit</span></dt>
+        <dd>
+            <span>{{aixmFeature.lowerLimit}}</span>
+        </dd>
+        <dt><span jhiTranslate="wadeApp.aixmFeature.upperLimit">Upper Limit</span></dt>
+        <dd>
+            <span>{{aixmFeature.upperLimit}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'aixm-feature/'+ aixmFeature.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

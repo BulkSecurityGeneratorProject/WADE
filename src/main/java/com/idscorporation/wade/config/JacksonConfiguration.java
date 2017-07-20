@@ -1,5 +1,6 @@
 package com.idscorporation.wade.config;
 
+import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
@@ -23,5 +24,11 @@ public class JacksonConfiguration {
     @Bean
     public AfterburnerModule afterburnerModule() {
         return new AfterburnerModule();
+    }
+
+    @Bean
+    public JtsModule jacksonJTSModule() {
+        JtsModule jtsModule = new JtsModule();
+        return jtsModule;
     }
 }

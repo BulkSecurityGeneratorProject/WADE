@@ -1,0 +1,27 @@
+{
+    "wadeApp": {
+        "aixmFeature" : {
+            "home": {
+                "title": "AixmFeatures",
+                "createLabel": "Genera un nuovo Aixm Feature",
+                "createOrEditLabel": "Genera o modifica un Aixm Feature",
+                "search": "Cerca Aixm Feature"
+            },
+            "created": "&Egrave; stato generato un nuovo Aixm Feature con identificatore {{ param }}",
+            "updated": "&Egrave; stato aggiornato Aixm Feature identificato da {{ param }}",
+            "deleted": "&Egrave; stato eliminato Aixm Feature con identificatore {{ param }}",
+            "delete": {
+                "question": "Sei sicuro di volere eliminare Aixm Feature {{ id }}?"
+            },
+            "detail": {
+                "title": "Aixm Feature"
+            },
+            "identifier": "Identifier",
+            "type": "Type",
+            "timeSlice": "Time Slice",
+            "geometry": "Geometry",
+            "lowerLimit": "Lower Limit",
+            "upperLimit": "Upper Limit"
+        }
+    }
+}

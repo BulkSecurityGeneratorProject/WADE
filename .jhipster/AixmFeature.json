@@ -1,0 +1,44 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "identifier",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "timeSlice",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "geometry",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "lowerLimit",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "upperLimit",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20170720105058",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "aixm_feature",
+    "pagination": "infinite-scroll"
+}

@@ -1,5 +1,6 @@
 package com.idscorporation.wade.web.rest;
 
+import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -39,6 +40,9 @@ public class TestUtil {
 
         JavaTimeModule module = new JavaTimeModule();
         mapper.registerModule(module);
+
+        JtsModule jtsModule = new JtsModule();
+        mapper.registerModule(jtsModule);
 
         return mapper.writeValueAsBytes(object);
     }
