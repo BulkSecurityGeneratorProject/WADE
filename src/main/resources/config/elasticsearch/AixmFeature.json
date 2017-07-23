@@ -1,5 +1,5 @@
 {
-	 "AixmFeature": {
+	 "aixmfeature": {
 	    "properties": {
 	       "identifier": {
 	          "type": "string"
@@ -14,7 +14,7 @@
                "type": "geo_shape",
                "tree": "geohash",
                "distance_error_pct": "0.025",
-               "precision": "10km"
+               "precision": "1m"
 	       },
 	       "lowerLimit": {
 	          "type": "long"

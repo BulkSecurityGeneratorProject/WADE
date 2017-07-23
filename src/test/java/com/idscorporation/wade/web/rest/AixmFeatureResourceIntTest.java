@@ -119,7 +119,7 @@ public class AixmFeatureResourceIntTest {
 
     @Before
     public void initTest() {
-        aixmFeatureSearchRepository.deleteAll();
+        //aixmFeatureSearchRepository.deleteAll();
         aixmFeature = createEntity(em);
     }
 
@@ -295,9 +295,9 @@ public class AixmFeatureResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the AixmFeature in the database
-        List<AixmFeature> aixmFeatureList = Lists.newArrayList(aixmFeatureSearchRepository.findAll());
-        assertThat(aixmFeatureList).hasSize(databaseSizeBeforeUpdate);
-        AixmFeature testAixmFeature = aixmFeatureList.get(aixmFeatureList.size() - 1);
+        AixmFeature testAixmFeature = aixmFeatureSearchRepository.findOne(aixmFeature.getId());
+        //assertThat(aixmFeatureList).hasSize(databaseSizeBeforeUpdate);
+        //AixmFeature testAixmFeature = aixmFeatureList.get(aixmFeatureList.size() - 1);
         assertThat(testAixmFeature.getIdentifier()).isEqualTo(UPDATED_IDENTIFIER);
         assertThat(testAixmFeature.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testAixmFeature.getTimeSlice()).isEqualTo(UPDATED_TIME_SLICE);
