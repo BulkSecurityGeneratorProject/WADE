@@ -1,5 +1,6 @@
 package com.idscorporation.wade.web.rest;
 
+import aero.aixm.schema.x51.AbstractAIXMFeatureDocument;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.idscorporation.wade.WadeApp;
@@ -13,6 +14,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.io.InputStream;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,8 +53,8 @@ public class AixmFeatureResourceIntTest {
     private static final String DEFAULT_TYPE = "AAAAAAAAAA";
     private static final String UPDATED_TYPE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_TIME_SLICE = "AAAAAAAAAA";
-    private static final String UPDATED_TIME_SLICE = "BBBBBBBBBB";
+    private static AbstractAIXMFeatureDocument DEFAULT_TIME_SLICE = null;
+    private static AbstractAIXMFeatureDocument UPDATED_TIME_SLICE = null;
 
     private static Geometry DEFAULT_GEOMETRY = null;
     private static Geometry UPDATED_GEOMETRY = null;
@@ -84,6 +87,10 @@ public class AixmFeatureResourceIntTest {
 
     private AixmFeature aixmFeature;
 
+    private static AbstractAIXMFeatureDocument doc;
+
+    private static AbstractAIXMFeatureDocument updatedDoc;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -95,6 +102,8 @@ public class AixmFeatureResourceIntTest {
         GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
         DEFAULT_GEOMETRY = gf.createPoint(new Coordinate(12.2345678, 42.3456789));
         UPDATED_GEOMETRY = gf.createPoint(new Coordinate(12, 42));
+        DEFAULT_TIME_SLICE = createFeature();
+        UPDATED_TIME_SLICE = createUpdatedFeature();
     }
 
     /**
@@ -106,6 +115,7 @@ public class AixmFeatureResourceIntTest {
     public static AixmFeature createEntity(EntityManager em) {
         GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
         DEFAULT_GEOMETRY = gf.createPoint(new Coordinate(12.2345678, 42.3456789));
+        DEFAULT_TIME_SLICE = createFeature();
 
         AixmFeature aixmFeature = new AixmFeature()
             .identifier(DEFAULT_IDENTIFIER)
@@ -115,6 +125,36 @@ public class AixmFeatureResourceIntTest {
             .lowerLimit(DEFAULT_LOWER_LIMIT)
             .upperLimit(DEFAULT_UPPER_LIMIT);
         return aixmFeature;
+    }
+
+
+    public static AbstractAIXMFeatureDocument createFeature() {
+        if (doc!=null)
+            return doc;
+        String filename = "aixm/AirportHeliport.xml";
+        try {
+            InputStream is = AixmFeatureResourceIntTest.class.getClassLoader().getResourceAsStream(filename);
+            doc = AbstractAIXMFeatureDocument.Factory.parse(is);
+            return doc;
+        }catch (Exception e ) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static AbstractAIXMFeatureDocument createUpdatedFeature() {
+        if (updatedDoc!=null)
+            return updatedDoc;
+        String filename = "aixm/AirportHeliport.xml";
+        try {
+            InputStream is = AixmFeatureResourceIntTest.class.getClassLoader().getResourceAsStream(filename);
+            updatedDoc = AbstractAIXMFeatureDocument.Factory.parse(is);
+            updatedDoc.getAbstractAIXMFeature().setId("updatedId");
+            return updatedDoc;
+        }catch (Exception e ) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Before
@@ -140,14 +180,10 @@ public class AixmFeatureResourceIntTest {
         AixmFeature testAixmFeature = aixmFeatureList.get(aixmFeatureList.size() - 1);
         assertThat(testAixmFeature.getIdentifier()).isEqualTo(DEFAULT_IDENTIFIER);
         assertThat(testAixmFeature.getType()).isEqualTo(DEFAULT_TYPE);
-        assertThat(testAixmFeature.getTimeSlice()).isEqualTo(DEFAULT_TIME_SLICE);
+        assertThat(testAixmFeature.getTimeSlice().toString()).isEqualTo(DEFAULT_TIME_SLICE.toString());
         assertThat(testAixmFeature.getGeometry()).isEqualTo(DEFAULT_GEOMETRY);
         assertThat(testAixmFeature.getLowerLimit()).isEqualTo(DEFAULT_LOWER_LIMIT);
         assertThat(testAixmFeature.getUpperLimit()).isEqualTo(DEFAULT_UPPER_LIMIT);
-
-        // Validate the AixmFeature in Elasticsearch
-        AixmFeature aixmFeatureEs = aixmFeatureSearchRepository.findOne(testAixmFeature.getId());
-        assertThat(aixmFeatureEs).isEqualToComparingFieldByField(testAixmFeature);
     }
 
     @Test
@@ -237,7 +273,7 @@ public class AixmFeatureResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(aixmFeature.getId().longValue())))
             .andExpect(jsonPath("$.[*].identifier").value(hasItem(DEFAULT_IDENTIFIER.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].timeSlice").value(hasItem(DEFAULT_TIME_SLICE.toString())))
+            .andExpect(jsonPath("$.[*].timeSlice.aixm_AirportHeliport.attr_gml_id.value").value(hasItem(DEFAULT_TIME_SLICE.getAbstractAIXMFeature().getId())))
             .andExpect(jsonPath("$.[*].geometry.type").value(hasItem(DEFAULT_GEOMETRY.getGeometryType())))
             .andExpect(jsonPath("$.[*].lowerLimit").value(hasItem(DEFAULT_LOWER_LIMIT)))
             .andExpect(jsonPath("$.[*].upperLimit").value(hasItem(DEFAULT_UPPER_LIMIT)));
@@ -257,7 +293,7 @@ public class AixmFeatureResourceIntTest {
             .andExpect(jsonPath("$.id").value(aixmFeature.getId().longValue()))
             .andExpect(jsonPath("$.identifier").value(DEFAULT_IDENTIFIER.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
-            .andExpect(jsonPath("$.timeSlice").value(DEFAULT_TIME_SLICE.toString()))
+            .andExpect(jsonPath("$.timeSlice.aixm_AirportHeliport.attr_gml_id.value").value(DEFAULT_TIME_SLICE.getAbstractAIXMFeature().getId()))
             .andExpect(jsonPath("$.geometry.type").value(DEFAULT_GEOMETRY.getGeometryType()))
             .andExpect(jsonPath("$.lowerLimit").value(DEFAULT_LOWER_LIMIT))
             .andExpect(jsonPath("$.upperLimit").value(DEFAULT_UPPER_LIMIT));
@@ -296,18 +332,12 @@ public class AixmFeatureResourceIntTest {
 
         // Validate the AixmFeature in the database
         AixmFeature testAixmFeature = aixmFeatureSearchRepository.findOne(aixmFeature.getId());
-        //assertThat(aixmFeatureList).hasSize(databaseSizeBeforeUpdate);
-        //AixmFeature testAixmFeature = aixmFeatureList.get(aixmFeatureList.size() - 1);
         assertThat(testAixmFeature.getIdentifier()).isEqualTo(UPDATED_IDENTIFIER);
         assertThat(testAixmFeature.getType()).isEqualTo(UPDATED_TYPE);
-        assertThat(testAixmFeature.getTimeSlice()).isEqualTo(UPDATED_TIME_SLICE);
+        assertThat(testAixmFeature.getTimeSlice().toString()).isEqualTo(UPDATED_TIME_SLICE.toString());
         assertThat(testAixmFeature.getGeometry()).isEqualTo(UPDATED_GEOMETRY);
         assertThat(testAixmFeature.getLowerLimit()).isEqualTo(UPDATED_LOWER_LIMIT);
         assertThat(testAixmFeature.getUpperLimit()).isEqualTo(UPDATED_UPPER_LIMIT);
-
-        // Validate the AixmFeature in Elasticsearch
-        AixmFeature aixmFeatureEs = aixmFeatureSearchRepository.findOne(testAixmFeature.getId());
-        assertThat(aixmFeatureEs).isEqualToComparingFieldByField(testAixmFeature);
     }
 
     @Test
@@ -363,7 +393,7 @@ public class AixmFeatureResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(aixmFeature.getId().longValue())))
             .andExpect(jsonPath("$.[*].identifier").value(hasItem(DEFAULT_IDENTIFIER.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].timeSlice").value(hasItem(DEFAULT_TIME_SLICE.toString())))
+            .andExpect(jsonPath("$.[*].timeSlice.aixm_AirportHeliport.attr_gml_id.value").value(hasItem(DEFAULT_TIME_SLICE.getAbstractAIXMFeature().getId())))
             .andExpect(jsonPath("$.[*].geometry.type").value(hasItem(DEFAULT_GEOMETRY.getGeometryType())))
             .andExpect(jsonPath("$.[*].lowerLimit").value(hasItem(DEFAULT_LOWER_LIMIT)))
             .andExpect(jsonPath("$.[*].upperLimit").value(hasItem(DEFAULT_UPPER_LIMIT)));

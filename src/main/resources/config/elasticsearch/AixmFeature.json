@@ -7,9 +7,6 @@
 	       "type": {
 	          "type": "string"
 	       },
-	       "timeSlice": {
-              "type": "string"
-	       },
 	       "geometry": {
                "type": "geo_shape",
                "tree": "geohash",

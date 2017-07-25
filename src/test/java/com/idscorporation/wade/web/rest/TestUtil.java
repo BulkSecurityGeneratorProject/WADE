@@ -4,6 +4,7 @@ import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.idscorporation.wade.domain.uitl.aixm.AIXMModule;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.springframework.http.MediaType;
@@ -44,7 +45,11 @@ public class TestUtil {
         JtsModule jtsModule = new JtsModule();
         mapper.registerModule(jtsModule);
 
-        return mapper.writeValueAsBytes(object);
+        AIXMModule aixmModule = new AIXMModule();
+        mapper.registerModule(aixmModule);
+
+        byte [] result = mapper.writeValueAsBytes(object);
+        return result;
     }
 
     /**

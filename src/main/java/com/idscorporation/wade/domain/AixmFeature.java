@@ -1,11 +1,13 @@
 package com.idscorporation.wade.domain;
 
+import aero.aixm.schema.x51.AbstractAIXMFeatureDocument;
 import com.vividsolutions.jts.geom.Geometry;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -30,7 +32,7 @@ public class AixmFeature implements Serializable {
     private String type;
 
     @NotNull
-    private String timeSlice;
+    private AbstractAIXMFeatureDocument timeSlice;
 
     private Geometry geometry;
 
@@ -77,16 +79,16 @@ public class AixmFeature implements Serializable {
         this.type = type;
     }
 
-    public String getTimeSlice() {
+    public AbstractAIXMFeatureDocument getTimeSlice() {
         return timeSlice;
     }
 
-    public AixmFeature timeSlice(String timeSlice) {
+    public AixmFeature timeSlice(AbstractAIXMFeatureDocument timeSlice) {
         this.timeSlice = timeSlice;
         return this;
     }
 
-    public void setTimeSlice(String timeSlice) {
+    public void setTimeSlice(AbstractAIXMFeatureDocument timeSlice) {
         this.timeSlice = timeSlice;
     }
 

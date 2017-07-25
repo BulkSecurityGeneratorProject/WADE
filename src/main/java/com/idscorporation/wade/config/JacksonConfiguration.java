@@ -4,6 +4,7 @@ import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
+import com.idscorporation.wade.domain.uitl.aixm.AIXMModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,5 +31,11 @@ public class JacksonConfiguration {
     public JtsModule jacksonJTSModule() {
         JtsModule jtsModule = new JtsModule();
         return jtsModule;
+    }
+
+    @Bean
+    public AIXMModule jacksonAIXMModule() {
+        AIXMModule aixmModule = new AIXMModule();
+        return aixmModule;
     }
 }
